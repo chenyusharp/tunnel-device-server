@@ -1,0 +1,66 @@
+var:
+  server: 47.95.209.223
+  server-test: 47.98.222.182
+  appName: tunnel-device
+
+server:
+  port: 8090
+  servlet:
+    context-path: /${var.appName}
+spring:
+  application:
+    name: ${var.appName}
+  profiles:
+    active: dev
+  redis:
+    host: ${var.server}
+    port: 6379
+    password: 503149
+    database: 14
+  session:
+    store-type: redis
+  jackson:
+    time-zone: GMT+8
+  aop:
+    auto: true
+    proxy-target-class: true
+  cache:
+    type: redis
+
+mod:
+  ali-dayu:
+    AccessKeyID: LTAIz5RBnx1sxk1j
+    AccessKeySecret: 2gN8qZo6X5QPqJf1fMvW6FANrYun6x
+
+
+
+pagehelper:
+  reasonable: false
+  support-methods-arguments: true
+  helper-dialect: postgresql
+  params: count=countSql
+
+logging:
+  file: /root/${var.appName}/console.log
+  level:
+      com.tunnel: debug
+      org.springframework.session.data.redis: error
+
+
+
+---
+spring:
+  profiles: dev
+  application:
+    name: ${var.appName}-dev
+  redis:
+      host: ${var.server}
+      port: 6379
+      password: 503149
+      database: 1
+
+mybatis:
+  pgsql1:
+    url: jdbc:postgresql://${var.server-test}:5432/tunnel-device-test
+    username: tunnel-device-test
+    password: test123

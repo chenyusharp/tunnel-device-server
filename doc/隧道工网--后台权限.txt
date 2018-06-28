@@ -1,0 +1,18 @@
+网站管理:
+    首页楼层 HomefloorRole
+    广告位 advPositionRole
+    广告管理 advManageRole
+    今日推荐 todayRecommendRole
+     管理员管理 administerRole
+           
+商品管理: 
+        分类管理 classManageRole
+        商品发布 postGoodRole
+        商品库 goodHouseRole
+        公共数据管理 publicDataRole
+          
+ 交易管理:
+     设备回收 equipmentRecycleRole
+          
+会员管理  :   memberManageRole
+求购管理  :    purchaseManageRole
