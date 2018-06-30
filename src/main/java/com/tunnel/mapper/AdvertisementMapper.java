@@ -2,8 +2,10 @@ package com.tunnel.mapper;
 
 import com.tunnel.bean.Advertisement;
 import com.tunnel.bean.AdvertisementExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 public interface AdvertisementMapper {
     int countByExample(AdvertisementExample example);
@@ -27,4 +29,16 @@ public interface AdvertisementMapper {
     int updateByPrimaryKeySelective(Advertisement record);
 
     int updateByPrimaryKey(Advertisement record);
+
+    @Select("select count(*) from advertisement where placeid = #{advertisingPlaceId , jdbcType=BIGINT}")
+    int countByAdvertisingPlaceId(@Param("advertisingPlaceId") Long advertisingPlaceId);
+
+
+    @Select("select am.* from advertisement am\n" +
+            "left join advertisingplace ap\n" +
+            "on ap.id=am.placeid\n" +
+            "where ap.position=#{position , jdbcType=VARCHAR}\n" +
+            "and am.endtime > now() \n" +
+            "and ap.stop =0 order by am.sort asc limit #{count}")
+    List<Advertisement> getAdvertisment(@Param("position") String position, @Param("count") int count);
 }

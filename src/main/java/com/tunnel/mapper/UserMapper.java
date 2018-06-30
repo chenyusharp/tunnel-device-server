@@ -4,6 +4,7 @@ import com.tunnel.bean.User;
 import com.tunnel.bean.UserExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 public interface UserMapper {
     int countByExample(UserExample example);
@@ -27,5 +28,8 @@ public interface UserMapper {
     int updateByPrimaryKeySelective(User record);
 
     int updateByPrimaryKey(User record);
+
+    @Select("select * from user where telphone=#{telphone} limit 1")
+    User selectByTelphone(@Param("telphone") String telphone);
 
 }

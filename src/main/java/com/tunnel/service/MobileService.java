@@ -2,12 +2,17 @@ package com.tunnel.service;
 
 import com.tunnel.bean.SmsLog;
 import com.tunnel.common.constant.AppConstant;
+import com.tunnel.common.utils.CommonUtils;
+import com.tunnel.common.utils.DateUtils;
+import com.tunnel.common.utils.DayuSms;
 import com.tunnel.mapper.SmsLogMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * create : wyh
@@ -18,24 +23,26 @@ public class MobileService {
 
     @Autowired
     private SmsLogMapper smsLogMapper;
-//    @Autowired
-//    private DayuSms dayuSms;
+    @Autowired
+    private DayuSms dayuSms;
 
 
     public boolean sendMobileCode(HttpServletRequest request, String mobile,short type) {
 
         //生成验证码
-//        String verifyCode = CommonUtils.genVerificationCode(4);
-//        String content = "尊敬的用户，您正在进行手机验证操作，您的验证码为:"+verifyCode+"验证码有效期为5分钟";
+        String verifyCode = CommonUtils.genVerificationCode(4);
+        String content = "尊敬的用户，您正在进行手机验证操作，您的验证码为:${verifyCode}验证码有效期为5分钟";
+        Map<String,Object> params=new HashMap<>();
+        params.put("verifyCode",verifyCode);
         //  调用手机发送验证码接口
-//        boolean b = SmsSend.send(mobile,content);
+        boolean b = dayuSms.sendSms(mobile,content,params);
         String code = null;
 
         if(mobile.equals(AppConstant.MOCK_MOBILE)){
             code = AppConstant.MOCK_VERIFY_CODE;
         }else{
 //            code = dayuSms.send(mobile);
-            code=AppConstant.MOCK_VERIFY_CODE;
+            code=verifyCode;
         }
 
         if(code==null){
@@ -58,30 +65,30 @@ public class MobileService {
     }
 
 
-//    public  SmsLog getLastLog(String mobile,String type,int minutes){
-//       SmsLog smsLog =  smsLogMapper.getLastLog(mobile,type);
-//       if(smsLog != null && DateUtils.diffSeconds(smsLog.getCreatedate(),new Date())<=minutes*60){
-//           return  smsLog;
-//       }
-//       return  null;
-//    }
-//
-//    /**
-//     * 验证原手机号码
-//     */
-//    public boolean checkMobileCode(String mobile,String mobilecode,String type){
-//        boolean bool=false;
-//        SmsLog smsLog=smsLogMapper.getLastLog(mobile,type);
-//
-//        if(smsLog==null){
-//            return  false;
-//        }
-//
-//        if (!mobilecode.equals(smsLog.getVerifycode())){
-//            return false;
-//        }else {
-//            return true;
-//        }
-//    }
+    public  SmsLog getLastLog(String mobile,short type,int minutes){
+       SmsLog smsLog =  smsLogMapper.getLastLog(mobile,type);
+       if(smsLog != null && DateUtils.diffSeconds(smsLog.getSendTime(),new Date())<=minutes*60){
+           return  smsLog;
+       }
+       return  null;
+    }
+
+    /**
+     * 验证原手机号码
+     */
+    public boolean checkMobileCode(String mobile,String mobilecode,short type){
+        boolean bool=false;
+        SmsLog smsLog=smsLogMapper.getLastLog(mobile,type);
+
+        if(smsLog==null){
+            return  false;
+        }
+
+        if (!mobilecode.equals(smsLog.getCode())){
+            return false;
+        }else {
+            return true;
+        }
+    }
 
     }

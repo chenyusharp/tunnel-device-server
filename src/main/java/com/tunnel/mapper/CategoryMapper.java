@@ -4,6 +4,7 @@ import com.tunnel.bean.Category;
 import com.tunnel.bean.CategoryExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 public interface CategoryMapper {
     int countByExample(CategoryExample example);
@@ -27,4 +28,7 @@ public interface CategoryMapper {
     int updateByPrimaryKeySelective(Category record);
 
     int updateByPrimaryKey(Category record);
+
+    @Select("select id,parent_id as parentId,name,sort,type from category order  by  sort asc ")
+    List<Category> listAll();
 }

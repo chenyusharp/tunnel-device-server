@@ -2,10 +2,13 @@ package com.tunnel.controller.common_controller;
 
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
+import com.tunnel.bean.SmsLog;
 import com.tunnel.bean.User;
 import com.tunnel.common.bean.BasicRet;
 import com.tunnel.common.constant.AppConstant;
+import com.tunnel.common.constant.SmsType;
 import com.tunnel.controller.member_controller.UserAction;
+import com.tunnel.service.MobileService;
 import com.tunnel.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,15 +23,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.PrivateKey;
 
 @Controller
 @RequestMapping("/rest/common")
@@ -39,6 +45,8 @@ public class CommonAction {
     private DefaultKaptcha defaultKaptcha;
     @Autowired
     private UserService userService;
+    @Autowired
+    private MobileService mobileService;
 
 
     @RequestMapping(value = "/ImgCode", method = RequestMethod.GET)
@@ -88,8 +96,8 @@ public class CommonAction {
      */
     @RequestMapping(value = "/getUserInfo",method = RequestMethod.POST)
     @ApiOperation("获取个人信息接口(session)")
-    public UserAction.UserRet getUserInfo(Model model){
-        UserAction.UserRet userRet=new UserAction.UserRet();
+    public UserInfoRet getUserInfo(Model model){
+        UserInfoRet userRet=new UserInfoRet();
         User user= (User) model.asMap().get(AppConstant.MEMBER_SESSION_NAME);
         if (user==null){
             userRet.setMessage("用户未登录");
@@ -97,26 +105,38 @@ public class CommonAction {
         }else{
             userRet.setResult(BasicRet.SUCCESS);
             userRet.setMessage("获取成功");
-            userRet.setUser(user);
+            userRet.setData(user);
         }
         return userRet;
     }
 
     @RequestMapping(value = "/db/getUserInfo",method = RequestMethod.POST)
     @ApiOperation("获取个人信息接口(数据库)")
-    public UserAction.UserRet getUserInfoFromDb(Model model){
-        UserAction.UserRet userRet=new UserAction.UserRet();
+    public UserInfoRet getUserInfoFromDb(Model model){
+        UserInfoRet userRet=new UserInfoRet();
         User user= (User) model.asMap().get(AppConstant.MEMBER_SESSION_NAME);
         if (user==null){
             userRet.setMessage("用户未登录");
             userRet.setResult(BasicRet.TOKEN_ERR);
         }else{
-            user=userService.getMemberById(user.getId());
+            user=userService.getUserById(user.getId());
             userRet.setResult(BasicRet.SUCCESS);
             userRet.setMessage("获取成功");
-            userRet.setUser(user);
+            userRet.setData(user);
         }
         return userRet;
+    }
+
+    private  class  UserInfoRet extends  BasicRet{
+        private User data;
+
+        public User getData() {
+            return data;
+        }
+
+        public void setData(User data) {
+            this.data = data;
+        }
     }
 
 

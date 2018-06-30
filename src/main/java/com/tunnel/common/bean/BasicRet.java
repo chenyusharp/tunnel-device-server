@@ -1,11 +1,11 @@
 package com.tunnel.common.bean;
 
-import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.HashMap;
 import java.util.Map;
 
-public class BasicRet{
+public class BasicRet {
     private static final String key_result = "result";
     private static final String key_message = "message";
     public static final int ERR = 0;
@@ -16,29 +16,6 @@ public class BasicRet{
     )
     protected int result;
     protected String message;
-    protected Map<String,Object> data;
-
-    public class PageInfoData{
-        private PageInfo pageInfo;
-
-        public PageInfo getPageInfo() {
-            return pageInfo;
-        }
-
-        public void setPageInfo(PageInfo pageInfo) {
-            this.pageInfo = pageInfo;
-        }
-    }
-
-    public PageInfoData pageInfoData = new PageInfoData();
-
-    public PageInfoData getPageInfoData() {
-        return pageInfoData;
-    }
-
-    public void setPageInfoData(PageInfoData pageInfoData) {
-        this.pageInfoData = pageInfoData;
-    }
 
     public BasicRet() {
     }
@@ -52,6 +29,12 @@ public class BasicRet{
         this.message = message;
     }
 
+    public Map<String, Object> map() {
+        Map<String, Object> map = new HashMap();
+        map.put("result", this.result);
+        map.put("message", this.message);
+        return map;
+    }
 
     public int getResult() {
         return this.result;
@@ -69,13 +52,5 @@ public class BasicRet{
     public BasicRet setMessage(String message) {
         this.message = message;
         return this;
-    }
-
-    public Map<String, Object> getData() {
-        return data;
-    }
-
-    public void setData(Map<String, Object> data) {
-        this.data = data;
     }
 }

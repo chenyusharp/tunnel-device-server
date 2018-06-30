@@ -6,9 +6,10 @@ import com.google.gson.reflect.TypeToken;
 import com.tunnel.bean.CommonData;
 import com.tunnel.bean.CommonValue;
 import com.tunnel.common.bean.BasicRet;
+import com.tunnel.common.bean.PageRet;
+import com.tunnel.common.utils.CommonUtils;
 import com.tunnel.service.CommonDataService;
 import com.tunnel.service.CommonValueService;
-import com.tunnel.common.utils.CommonUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -161,15 +162,15 @@ public class CommonDataAction {
     @ApiImplicitParams({
             @ApiImplicitParam(value = "名称",name = "name",required = false,paramType = "query",dataType = "string"),
     })
-    public BasicRet listData(@RequestParam(required = true,defaultValue = "1") int pageNo,
+    public PageRet listData(@RequestParam(required = true,defaultValue = "1") int pageNo,
                             @RequestParam(required = true,defaultValue = "20") int pageSize,
                             @RequestParam(required = false) String name){
 
-        BasicRet basicRet = new BasicRet();
+        PageRet pageRet = new PageRet();
         PageInfo pageInfo =  commonDataService.listByPage(name,pageNo,pageSize);
-        basicRet.pageInfoData.setPageInfo(pageInfo);
-        basicRet.setResult(BasicRet.SUCCESS);
-        return  basicRet;
+        pageRet.data.setPageInfo(pageInfo);
+        pageRet.setResult(BasicRet.SUCCESS);
+        return  pageRet;
     }
 
     @PostMapping("/updateDate")

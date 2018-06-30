@@ -1,15 +1,18 @@
 package com.tunnel.controller.admin_controller;
 
 import com.github.pagehelper.PageInfo;
-import com.tunnel.service.AdminService;
 import com.tunnel.bean.Admin;
 import com.tunnel.common.bean.BasicRet;
+import com.tunnel.common.bean.PageRet;
 import com.tunnel.common.constant.AppConstant;
 import com.tunnel.common.utils.Base64Utils;
 import com.tunnel.common.utils.CommonUtils;
-import io.swagger.annotations.*;
+import com.tunnel.service.AdminService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -140,17 +143,17 @@ public class AdminAction {
     @ApiImplicitParams({
             @ApiImplicitParam(value = "姓名",name = "name",paramType = "query",dataType = "string"),
     })
-    public BasicRet listAdmin(@RequestParam(required = true,defaultValue = "1") int pageNo,
+    public PageRet listAdmin(@RequestParam(required = true,defaultValue = "1") int pageNo,
                              @RequestParam(required = true,defaultValue = "20") int pageSize,
                              @RequestParam(required = false,defaultValue = "") String name){
-        BasicRet basicRet =  new BasicRet();
+        PageRet pageRet =  new PageRet();
         Admin admin = new Admin();
         admin.setName(name);
         PageInfo pageInfo = adminService.listByPage(pageNo,pageSize,admin);
 
-        basicRet.pageInfoData.setPageInfo(pageInfo);
-        basicRet.setResult(BasicRet.SUCCESS);
-        return  basicRet;
+        pageRet.data.setPageInfo(pageInfo);
+        pageRet.setResult(BasicRet.SUCCESS);
+        return  pageRet;
     }
 
     @PostMapping("/getAdmin")
@@ -166,20 +169,20 @@ public class AdminAction {
         }
 
         adminDataRet.setResult(BasicRet.SUCCESS);
-        adminDataRet.setAdmin(admin);
+        adminDataRet.data =  admin;
 
         return  adminDataRet;
     }
 
     private  class  AdminDataRet extends  BasicRet{
-        private  Admin admin;
+        private  Admin data;
 
-        public Admin getAdmin() {
-            return admin;
+        public Admin getData() {
+            return data;
         }
 
-        public void setAdmin(Admin admin) {
-            this.admin = admin;
+        public void setData(Admin data) {
+            this.data = data;
         }
     }
 
